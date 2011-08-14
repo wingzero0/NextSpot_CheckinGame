@@ -74,13 +74,17 @@ class Welcome extends CI_Controller {
 
 			$this->load->model('Checkin_Game');
 			$ret = $this->Checkin_Game->last_question();
-			print_r($ret);	
-			//$ret = $this->Checkin_Game->checkin_comment($ret["checkin_id"], "comment time test".date("Y-m-d H:i:s"));
-			//print_r($ret);
+			print_r($ret);
+			if ($ret != NULL){
+				$ret = $this->Checkin_Game->answer_question($ret["last_checkin"]["checkin_id"], $ret["last_options"][1]["row_id"],$ret["last_options"][1]["name"]);
+				//$ret = $this->Checkin_Game->answer_question($ret["last_checkin"]["checkin_id"], 0, NULL);
+				print_r($ret);
+			}else{
+				echo "no question available\n";
+			}
 		}else{
 			$href = sprintf("<a href='%s'>login with fb</a>", $this->Facebook_Handshaking->get_login_url());
 		}
-		print_r($href);
 		echo "</pre>";
 	}
 

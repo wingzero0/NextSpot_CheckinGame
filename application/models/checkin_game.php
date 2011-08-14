@@ -4,7 +4,6 @@
 require_once(dirname(__FILE__)."/FB_info.php");
 
 class Checkin_Game extends CI_Model{
-//class Checkin_Game {
 	private $facebook = NULL;
 	public function __construct(){
 		//parent::__construct();
@@ -136,7 +135,7 @@ class Checkin_Game extends CI_Model{
 			);
 			$comment_obj = $this->facebook->api("/$checkin_id/comments/", "post", $attachment);
 
-			return $comment_obj;// should return true
+			return true;
 		}catch (FacebookApiException $e) {
 			echo $result = $e->getMessage();
 			print_r($e);
@@ -181,6 +180,38 @@ class Checkin_Game extends CI_Model{
 		}
 		$result["last_options"] = $query->result_array();
 		return $result;	
+	}
+	public function answer_question($checkin_id, $option_row_id, $name){
+		try{
+			//echo $option_row_id."\n";
+			if ($option_row_id != 0 && $option_row_id != "0"){
+				$attachment = array(
+					"message" => "我最後去了".$name
+				);
+				$comment_obj = $this->facebook->api("/$checkin_id/comments/", "post", $attachment);
+				$this->load->database();
+				$sql = sprintf("
+					update `option` set `final_answer` = 1
+					where `row_id` = '%d'
+					", $option_row_id);
+				$query = $this->db->query($sql);
+			}
+
+			$sql = sprintf("
+				update `checkin` set `answer_bit` = 0
+				where `checkin_id` = '%s'
+				", $checkin_id);
+			//echo $sql;
+			$query = $this->db->query($sql);
+
+			return $comment_obj;// should return true
+		}catch (FacebookApiException $e) {
+			echo $result = $e->getMessage();
+			print_r($e);
+			error_log($e);
+			return false;
+		}
+
 	}
 
 }
