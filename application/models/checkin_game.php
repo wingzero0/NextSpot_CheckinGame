@@ -41,7 +41,8 @@ class Checkin_Game extends CI_Model{
 		try{
 			$page = $this->facebook->api(sprintf("/%d", $checkin_page_id));
 			
-			$message = "老大們，你覺得我等一下應該去哪裏？\n";
+			$message = "你們覺得我等一下應該去哪裏？\n";
+			//$message = $checkin_msg;
 			foreach ($question_page_ids as $i => $v){
 				$pages[$i] = $this->facebook->api(sprintf("/%d", $v));
 				$message = sprintf("%s　%d %s\n", $message,$i, $pages[$i]["name"]);
